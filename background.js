@@ -1,12 +1,3 @@
-function logURL(requestDetails) {
-    browser.tabs.sendMessage(
-        requestDetails.tabId, { start: true }
-    );
-}
-
-browser.webRequest.onBeforeRequest.addListener(
-    logURL, { urls: ["*://github.com/search*"] }
-);
 browser.runtime.onMessage.addListener(notify);
 
 function notify(message, sender, sendResponse) {
@@ -24,8 +15,17 @@ function notify(message, sender, sendResponse) {
         }).map(function(el) {
             return el[0].url;
         })
-        console.log(final);
         sendResponse({ response: final });
     });
     return true;
 }
+
+function logURL(requestDetails) {
+    browser.tabs.sendMessage(
+        requestDetails.tabId, { start: true }
+    );
+}
+
+browser.webRequest.onCompleted.addListener(
+    logURL, { urls: ["*://github.com/search*"] }
+);
